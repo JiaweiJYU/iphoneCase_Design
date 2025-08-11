@@ -1,3 +1,6 @@
+// exporter.js —— 导出 PNG（可印区 − 孔），含 even-odd 兜底
+// 依赖：window.State, window.SUPPORTS_EVENODD
+
 window.Exporter = (function(){
   const { state } = State;
 
@@ -8,15 +11,18 @@ window.Exporter = (function(){
     out.height = state.caseArea.h * scale;
     const oc = out.getContext('2d');
 
+    // 底色（可选）
     oc.fillStyle = '#0b1224';
     oc.fillRect(0,0,out.width,out.height);
 
-    // 可印区-孔 裁剪（导出坐标从可印区左上为原点）
     oc.save();
-    oc.beginPath();
+
+    // ===== 构建“外框 + 孔”路径（导出坐标以可印区左上为原点）=====
+    // 外框
     (function(){
       const r = state.caseArea.r * scale;
       const x = 0, y = 0, w = out.width, h = out.height;
+      oc.beginPath();
       oc.moveTo(x + r, y);
       oc.arcTo(x + w, y,     x + w, y + h, r);
       oc.arcTo(x + w, y + h, x,     y + h, r);
@@ -24,11 +30,15 @@ window.Exporter = (function(){
       oc.arcTo(x,     y,     x + w, y,     r);
       oc.closePath();
     })();
-    for(const h of state.cameraCutouts){
-      if(h.type === 'circle'){
-        oc.moveTo((h.x - state.caseArea.x) * scale + h.r*scale, (h.y - state.caseArea.y) * scale);
-        oc.arc((h.x - state.caseArea.x) * scale, (h.y - state.caseArea.y) * scale, h.r*scale, 0, Math.PI*2);
-      }else if(h.type === 'rect'){
+
+    // 孔
+    for (const h of state.cameraCutouts){
+      if (h.type === 'circle'){
+        const cx = (h.x - state.caseArea.x) * scale;
+        const cy = (h.y - state.caseArea.y) * scale;
+        oc.moveTo(cx + h.r*scale, cy);
+        oc.arc(cx, cy, h.r*scale, 0, Math.PI*2);
+      } else {
         const x = (h.x - state.caseArea.x) * scale;
         const y = (h.y - state.caseArea.y) * scale;
         const w = h.w * scale, he = h.h * scale, r = (h.r || 0) * scale;
@@ -40,18 +50,71 @@ window.Exporter = (function(){
         oc.closePath();
       }
     }
-    oc.clip('evenodd');
 
-    // 绘制对象
-    for(const o of state.objects){
+    if (window.SUPPORTS_EVENODD) {
+      // A) 支持 even-odd：直接裁剪
+      oc.clip('evenodd');
+
+      // 绘制对象
+      for(const o of state.objects){
+        oc.save();
+        oc.translate((o.cx - state.caseArea.x)*scale, (o.cy - state.caseArea.y)*scale);
+        oc.rotate(o.angle);
+        const dw = (o.w*o.scale)*scale, dh = (o.h*o.scale)*scale;
+        oc.drawImage(o.img, -dw/2, -dh/2, dw, dh);
+        oc.restore();
+      }
+      oc.restore();
+
+    } else {
+      // B) 不支持 even-odd：仅裁外框再挖孔
+      // 仅裁外框
+      oc.beginPath();
+      (function(){
+        const r = state.caseArea.r * scale;
+        const x = 0, y = 0, w = out.width, h = out.height;
+        oc.moveTo(x + r, y);
+        oc.arcTo(x + w, y,     x + w, y + h, r);
+        oc.arcTo(x + w, y + h, x,     y + h, r);
+        oc.arcTo(x,     y + h, x,     y,     r);
+        oc.arcTo(x,     y,     x + w, y,     r);
+        oc.closePath();
+      })();
+      oc.clip();
+
+      // 绘制对象
+      for(const o of state.objects){
+        oc.save();
+        oc.translate((o.cx - state.caseArea.x)*scale, (o.cy - state.caseArea.y)*scale);
+        oc.rotate(o.angle);
+        const dw = (o.w*o.scale)*scale, dh = (o.h*o.scale)*scale;
+        oc.drawImage(o.img, -dw/2, -dh/2, dw, dh);
+        oc.restore();
+      }
+      oc.restore();
+
+      // 再把孔挖掉
       oc.save();
-      oc.translate((o.cx - state.caseArea.x)*scale, (o.cy - state.caseArea.y)*scale);
-      oc.rotate(o.angle);
-      const dw = (o.w*o.scale)*scale, dh = (o.h*o.scale)*scale;
-      oc.drawImage(o.img, -dw/2, -dh/2, dw, dh);
+      oc.globalCompositeOperation = 'destination-out';
+      for (const h of state.cameraCutouts){
+        oc.beginPath();
+        if (h.type === 'circle'){
+          oc.arc((h.x - state.caseArea.x)*scale, (h.y - state.caseArea.y)*scale, h.r*scale, 0, Math.PI*2);
+        } else {
+          const x = (h.x - state.caseArea.x) * scale;
+          const y = (h.y - state.caseArea.y) * scale;
+          const w = h.w * scale, he = h.h * scale, r = (h.r || 0) * scale;
+          oc.moveTo(x + r, y);
+          oc.arcTo(x + w, y,     x + w, y + he, r);
+          oc.arcTo(x + w, y + he, x,    y + he, r);
+          oc.arcTo(x,     y + he, x,    y,     r);
+          oc.arcTo(x,     y,      x + w, y,    r);
+          oc.closePath();
+        }
+        oc.fill();
+      }
       oc.restore();
     }
-    oc.restore();
 
     out.toBlob(blob=>{
       const a = document.createElement('a');
@@ -64,6 +127,7 @@ window.Exporter = (function(){
 
   return { exportPNG };
 })();
+
 
 
 

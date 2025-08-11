@@ -1,3 +1,15 @@
+// 是否支持 CanvasRenderingContext2D.clip(fillRule='evenodd')
+window.SUPPORTS_EVENODD = (() => {
+  try {
+    const c = document.createElement('canvas');
+    const ctx = c.getContext('2d');
+    ctx.beginPath();
+    ctx.rect(0,0,10,10);
+    ctx.clip('evenodd'); // 某些实现会抛错，或忽略 fillRule
+    return true;
+  } catch (e) { return false; }
+})();
+
 window.Utils = (function(){
   const clamp = (v,min,max)=> Math.max(min, Math.min(max, v));
   function roundedRectPath(ctx, x,y,w,h,r){
@@ -29,3 +41,4 @@ window.Utils = (function(){
   }
   return { clamp, roundedRectPath, aabbSize, appendHolePath };
 })();
+
