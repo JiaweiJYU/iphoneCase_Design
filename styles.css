@@ -1,0 +1,52 @@
+:root{ --bg:#0f172a; --panel:#111827; --muted:#334155; --text:#e5e7eb; --acc:#22d3ee; }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:var(--bg); color:var(--text);
+  display:flex; min-height:100vh;
+}
+aside{ width:260px; background:var(--panel); border-right:1px solid #1f2937;
+  padding:16px; display:flex; flex-direction:column; gap:12px }
+h1{font-size:16px; margin:0 0 8px 0; color:#cbd5e1}
+select{padding:8px; border-radius:8px; border:1px solid #25304a; background:#0b1224; color:var(--text)}
+.palette{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.icon{
+  width:74px;height:74px; border:1px dashed var(--muted); border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,0.03); cursor:grab; user-select:none;
+}
+.icon img{max-width:60px; max-height:60px; pointer-events:none}
+.hint{font-size:12px; color:#9aa5b1}
+.hint.small{opacity:.8}
+
+main{flex:1; display:flex; gap:16px; padding:16px}
+.stage-wrap{
+  position:relative; margin:auto; background:linear-gradient(135deg, #0b1022, #0c142e);
+  padding:16px; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.35)
+}
+#stage{
+  display:block; background:#0a0f1f; border-radius:20px;
+  /* 禁止默认触控手势，便于两指缩放/旋转 */
+  touch-action: none;
+}
+.hud{
+  position:absolute; left:16px; right:16px; bottom:16px; display:flex; gap:8px; justify-content:space-between; align-items:center;
+  background:rgba(0,0,0,.35); backdrop-filter: blur(6px);
+  padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,.06)
+}
+.btn{ appearance:none; border:1px solid #25304a; background:#0b1224; color:var(--text);
+  padding:8px 12px; border-radius:10px; cursor:pointer; transition:.2s; font-size:14px }
+.btn:hover{border-color:#3b82f6}
+.btn.primary{background:linear-gradient(180deg,#0ea5e9,#0284c7); border-color:#0284c7}
+.btns{display:flex; gap:8px}
+
+.rightbar{
+  width:260px; background:var(--panel); border-left:1px solid #1f2937;
+  padding:16px; display:flex; flex-direction:column; gap:12px
+}
+.field{display:flex; flex-direction:column; gap:6px}
+input[type="range"]{width:100%}
+.kbd{ font-family:ui-monospace, Menlo, monospace; font-size:12px;
+  padding:2px 6px; border:1px solid #334155; border-radius:6px; background:#0b1224; color:#e2e8f0 }
+html, body { overscroll-behavior: none; }
