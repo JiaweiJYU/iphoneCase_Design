@@ -23,7 +23,18 @@ DEVICE_LIST.forEach(d=>{
 function applyDevice(deviceId){
   state.deviceId = deviceId;
   const params = DEVICE_PARAMS[deviceId];
-  applyDeviceParams(params);
+  if(!params){
+    console.warn('[device] 未找到机型参数：', deviceId, '，已回退到演示默认。');
+    // 明显不同的演示尺寸，便于肉眼识别切换
+    const fallback = {
+      outer:{x:10,y:10,w:400,h:800,r:60},
+      print:{x:40,y:40,w:340,h:740,r:30},
+      holes:[{type:'circle', x: 340, y: 120, r: 30}]
+    };
+    applyDeviceParams(fallback);
+  }else{
+    applyDeviceParams(params);
+  }
   draw(ctx);
 }
 applyDevice(state.deviceId);

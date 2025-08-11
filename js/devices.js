@@ -1,18 +1,8 @@
 // 机型清单（X 到 16 系列，16 为占位）：
 export const DEVICE_LIST = [
-  { id:'iphone-x', name:'iPhone X' },
-  { id:'iphone-xs', name:'iPhone XS' },
   { id:'iphone-11', name:'iPhone 11' },
-  { id:'iphone-12', name:'iPhone 12' },
-  { id:'iphone-12-pro', name:'iPhone 12 Pro' },
-  { id:'iphone-13', name:'iPhone 13' },
-  { id:'iphone-13-pro', name:'iPhone 13 Pro' },
-  { id:'iphone-14', name:'iPhone 14' },
   { id:'iphone-14-pro', name:'iPhone 14 Pro' },
-  { id:'iphone-15', name:'iPhone 15' },
-  { id:'iphone-15-pro', name:'iPhone 15 Pro' },
-  { id:'iphone-16', name:'iPhone 16（占位）' },
-  { id:'iphone-16-pro', name:'iPhone 16 Pro（占位）' }
+  { id:'iphone-15-pro', name:'iPhone 15 Pro' }
 ];
 
 // —— 重要说明 ——
