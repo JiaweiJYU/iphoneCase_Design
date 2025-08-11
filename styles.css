@@ -28,8 +28,7 @@ main{flex:1; display:flex; gap:16px; padding:16px}
 }
 #stage{
   display:block; background:#0a0f1f; border-radius:20px;
-  /* 触控适配：禁用浏览器默认缩放/双击放大 */
-  touch-action: none;
+  outline:none;  /* 让 focus 不显示系统蓝边（按需） */
 }
 .hud{
   position:absolute; left:16px; right:16px; bottom:16px; display:flex; gap:8px; justify-content:space-between; align-items:center;
@@ -50,6 +49,4 @@ main{flex:1; display:flex; gap:16px; padding:16px}
 input[type="range"]{width:100%}
 .kbd{ font-family:ui-monospace, Menlo, monospace; font-size:12px;
   padding:2px 6px; border:1px solid #334155; border-radius:6px; background:#0b1224; color:#e2e8f0 }
-
-html, body { overscroll-behavior: none; }
 

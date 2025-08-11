@@ -1,18 +1,17 @@
 import { setupCanvasDPR, applyDeviceParams } from './canvasSetup.js';
 import { initPalette } from './palette.js';
 import { installMouse } from './interactionsMouse.js';
-import { installTouchGestures } from './touchGestures.js';
 import { installStorage } from './storage.js';
 import { exportPNG } from './exporter.js';
 import { DEVICE_LIST, DEVICE_PARAMS } from './devices.js';
 import { state, api } from './state.js';
 import { draw } from './render.js';
 
-// 画布
+// 画布与 DPR
 const canvas = document.getElementById('stage');
 const { ctx } = setupCanvasDPR(canvas);
 
-// 机型下拉
+// 机型下拉（确保 id 与 DEVICE_PARAMS 完全一致）
 const sel = document.getElementById('deviceSelect');
 DEVICE_LIST.forEach(d=>{
   const opt = document.createElement('option');
@@ -20,12 +19,13 @@ DEVICE_LIST.forEach(d=>{
   if(d.id === state.deviceId) opt.selected = true;
   sel.appendChild(opt);
 });
+
+// 应用机型参数（含兜底与日志）
 function applyDevice(deviceId){
   state.deviceId = deviceId;
   const params = DEVICE_PARAMS[deviceId];
   if(!params){
-    console.warn('[device] 未找到机型参数：', deviceId, '，已回退到演示默认。');
-    // 明显不同的演示尺寸，便于肉眼识别切换
+    console.warn('[device] 未找到机型参数：', deviceId, '，回退到演示默认。');
     const fallback = {
       outer:{x:10,y:10,w:400,h:800,r:60},
       print:{x:40,y:40,w:340,h:740,r:30},
@@ -40,14 +40,12 @@ function applyDevice(deviceId){
 applyDevice(state.deviceId);
 sel.addEventListener('change', ()=> applyDevice(sel.value));
 
-// 素材 & 交互 & 存取 & 导出
+// 左侧素材、鼠标交互、存取、导出
 initPalette(canvas, ctx);
-const helpers = installMouse(canvas, ctx);
-installTouchGestures(canvas, ctx, helpers);
 installStorage(canvas, ctx);
 document.getElementById('btnExport').addEventListener('click', exportPNG);
 
-// UI：贴靠与旋转模式
+// 贴靠与旋转模式 UI
 document.getElementById('snapToggle').addEventListener('change', (e)=>{
   state.snapEnabled = e.target.checked;
 });
@@ -65,6 +63,9 @@ scaleRange.addEventListener('input', ()=>{
   draw(ctx);
 });
 
-// 首次绘制
+// 绑定桌面鼠标交互（最后绑定，确保 state/UI 都就绪）
+installMouse(canvas, ctx);
+
+// 首绘
 draw(ctx);
 

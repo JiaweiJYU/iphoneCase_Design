@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>手机壳DIY编辑器 2.0</title>
+  <title>手机壳DIY编辑器（桌面版）</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -14,14 +14,15 @@
     <h1>素材库（拖到画布）</h1>
     <div class="palette" id="palette"></div>
     <div class="hint">
-      2.1
-      电脑：拖动；按 <span class="kbd">R</span> 并在对象上拖动旋转；滚轮缩放；Delete删除。<br/>
-      手机：单指拖动；两指捏合缩放；两指扭动旋转。
+      2.2鼠标拖动：移动；<br/>
+      按住 <span class="kbd">R</span> 再拖动：旋转；<br/>
+      滚轮：缩放；Delete：删除。
     </div>
   </aside>
 
   <main>
     <div class="stage-wrap">
+      <!-- tabindex 让画布可聚焦，确保能收到键盘事件 -->
       <canvas id="stage" width="420" height="820" tabindex="0" aria-label="手机壳设计画布"></canvas>
       <div class="hud">
         <div class="btns">
@@ -48,12 +49,11 @@
     </div>
     <div class="field toggle">
       <input type="checkbox" id="rotateMode">
-      <label for="rotateMode">旋转模式（不用按 R，拖动即旋转）</label>
+      <label for="rotateMode">旋转模式（不按 R，拖动即旋转）</label>
     </div>
     <div class="hint small">机型切换仅影响外框/可印区/开孔；图层不会丢失。</div>
   </div>
 
-  <!-- 入口脚本（必须用模块） -->
   <script type="module" src="./js/main.js"></script>
 </body>
 </html>

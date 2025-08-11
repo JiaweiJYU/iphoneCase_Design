@@ -44,3 +44,4 @@ export function installStorage(canvas, ctx){
     input.click();
   });
 }
+

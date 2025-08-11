@@ -1,6 +1,6 @@
 import { state } from './state.js';
 
-// 导出 PNG：只导出可印区，遮掉相机孔
+// 导出 PNG（裁到可印区，遮掉相机孔）
 export function exportPNG(){
   const scale = 2;
   const out = document.createElement('canvas');
@@ -11,7 +11,7 @@ export function exportPNG(){
   oc.fillStyle = '#0b1224';
   oc.fillRect(0,0,out.width,out.height);
 
-  // Clip 可印区（圆角）
+  // 可印区圆角裁剪
   oc.save();
   (function(){
     const r = state.caseArea.r * scale;
@@ -55,4 +55,5 @@ export function exportPNG(){
     URL.revokeObjectURL(a.href);
   }, 'image/png');
 }
+
 

@@ -1,5 +1,6 @@
 import { state } from './state.js';
 
+// DPR 适配
 export function setupCanvasDPR(canvas){
   const DPR = Math.max(1, Math.floor(window.devicePixelRatio || 1));
   const cssW = canvas.width, cssH = canvas.height;
@@ -12,9 +13,11 @@ export function setupCanvasDPR(canvas){
   return {ctx, DPR};
 }
 
+// 根据机型应用外框、可印区、孔位
 export function applyDeviceParams(params){
   state.outer = {...params.outer};
   state.caseArea = {...params.print};
   state.cameraCutouts = params.holes || [];
 }
+
 

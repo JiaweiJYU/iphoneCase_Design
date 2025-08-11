@@ -1,6 +1,7 @@
 import { state } from './state.js';
 import { roundedRectPath } from './utils.js';
 
+// 总渲染：外框 → 可印区(含网格/孔遮罩) → 对象 → 选框
 export function draw(ctx){
   const { outer, caseArea } = state;
   ctx.clearRect(0,0,ctx.canvas.width, ctx.canvas.height);
@@ -27,15 +28,13 @@ export function draw(ctx){
   }
   ctx.globalAlpha = 1;
 
-  // 相机孔遮罩
+  // 相机孔遮罩（示例：圆孔）
   for(const h of state.cameraCutouts){
     if(h.type === 'circle'){
       ctx.save();
       ctx.globalCompositeOperation = 'destination-out';
-      ctx.beginPath();
-      ctx.arc(h.x, h.y, h.r, 0, Math.PI*2);
-      ctx.fill();
-      ctx.restore();
+      ctx.beginPath(); ctx.arc(h.x, h.y, h.r, 0, Math.PI*2);
+      ctx.fill(); ctx.restore();
     }
   }
 
@@ -68,3 +67,4 @@ export function draw(ctx){
     ctx.restore();
   }
 }
+
