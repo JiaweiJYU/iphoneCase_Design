@@ -125,7 +125,7 @@ main {
     appearance: none;
     border: 1px solid #25304a;
     background: #0b1224;
-    color: var(--text);
+    color: #e5e7eb;
     padding: 8px 12px;
     border-radius: 10px;
     cursor: pointer;
