@@ -1,5 +1,5 @@
-// 桌面端：命中测试、拖动、R+拖动旋转、滚轮缩放
-import { state, api } from './state.js';
+// 桌面：命中、拖动、R+拖动旋转（或旋转模式）、滚轮缩放、删除
+import { state } from './state.js';
 import { clamp, aabbSize } from './utils.js';
 import { draw } from './render.js';
 import { snapMove, snapAngle } from './snapping.js';
@@ -37,7 +37,7 @@ export function installMouse(canvas, ctx){
 
     if(id){
       const o = state.objects.find(x=>x.id===id);
-      if(state.rKeyDown){
+      if(state.rKeyDown || state.rotateMode){
         const pointerAngle = Math.atan2(my - o.cy, mx - o.cx);
         rotating = {id, startAngle: o.angle, startPointerAngle: pointerAngle};
         canvas.style.cursor = 'grabbing';
@@ -96,6 +96,6 @@ export function installMouse(canvas, ctx){
     }
   }, {passive:false});
 
-  // 导出内部函数，让触控模块复用
+  // 让触控模块复用
   return { hitTest, autoConstrain };
 }

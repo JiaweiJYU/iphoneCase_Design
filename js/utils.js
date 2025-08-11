@@ -10,7 +10,7 @@ export function roundedRectPath(ctx, x,y,w,h,r){
   ctx.closePath();
 }
 
-// 旋转后外接矩形尺寸（给中心约束用）
+// 旋转后外接矩形尺寸（中心约束用）
 export function aabbSize(w, h, rad){
   const c = Math.abs(Math.cos(rad)), s = Math.abs(Math.sin(rad));
   return {W: w*c + h*s, H: w*s + h*c};

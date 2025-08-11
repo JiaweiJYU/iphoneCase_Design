@@ -10,6 +10,7 @@ aside{ width:260px; background:var(--panel); border-right:1px solid #1f2937;
   padding:16px; display:flex; flex-direction:column; gap:12px }
 h1{font-size:16px; margin:0 0 8px 0; color:#cbd5e1}
 select{padding:8px; border-radius:8px; border:1px solid #25304a; background:#0b1224; color:var(--text)}
+
 .palette{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
 .icon{
   width:74px;height:74px; border:1px dashed var(--muted); border-radius:12px;
@@ -27,7 +28,7 @@ main{flex:1; display:flex; gap:16px; padding:16px}
 }
 #stage{
   display:block; background:#0a0f1f; border-radius:20px;
-  /* 禁止默认触控手势，便于两指缩放/旋转 */
+  /* 触控适配：禁用浏览器默认缩放/双击放大 */
   touch-action: none;
 }
 .hud{
@@ -49,4 +50,6 @@ main{flex:1; display:flex; gap:16px; padding:16px}
 input[type="range"]{width:100%}
 .kbd{ font-family:ui-monospace, Menlo, monospace; font-size:12px;
   padding:2px 6px; border:1px solid #334155; border-radius:6px; background:#0b1224; color:#e2e8f0 }
+
 html, body { overscroll-behavior: none; }
+

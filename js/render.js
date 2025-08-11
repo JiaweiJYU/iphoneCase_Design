@@ -1,21 +1,20 @@
 import { state } from './state.js';
 import { roundedRectPath } from './utils.js';
 
-// 绘制整张画布（外框、网格、相机孔遮罩、对象、选框）
 export function draw(ctx){
   const { outer, caseArea } = state;
   ctx.clearRect(0,0,ctx.canvas.width, ctx.canvas.height);
+
   // 外框
   ctx.save();
   roundedRectPath(ctx, outer.x, outer.y, outer.w, outer.h, outer.r);
   ctx.fillStyle = '#0b1224'; ctx.fill();
   ctx.lineWidth = 3; ctx.strokeStyle = '#1f2937'; ctx.stroke();
 
-  // 可印区 + 背景网格 + 相机孔遮罩
+  // 可印区 + 网格
   roundedRectPath(ctx, caseArea.x, caseArea.y, caseArea.w, caseArea.h, caseArea.r);
   ctx.clip();
 
-  // 网格
   const grid = 20;
   ctx.globalAlpha = .15;
   for(let x=caseArea.x; x<caseArea.x+caseArea.w; x+=grid){
@@ -28,17 +27,19 @@ export function draw(ctx){
   }
   ctx.globalAlpha = 1;
 
-  // 遮相机孔（演示：现在只支持圆形，拿到模板可扩展矩形/路径）
+  // 相机孔遮罩
   for(const h of state.cameraCutouts){
     if(h.type === 'circle'){
       ctx.save();
-      ctx.globalCompositeOperation = 'destination-out'; // 从可印区抠掉
-      ctx.beginPath(); ctx.arc(h.x, h.y, h.r, 0, Math.PI*2);
-      ctx.fill(); ctx.restore();
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(h.x, h.y, h.r, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
     }
   }
 
-  // 画对象
+  // 对象
   for(const o of state.objects){
     ctx.save();
     ctx.translate(o.cx, o.cy);

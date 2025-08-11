@@ -3,19 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>手机壳DIY编辑器（机型选择｜双端）</title>
+  <title>手机壳DIY编辑器 2.0</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <aside>
     <h1>选择机型</h1>
-    <!-- 机型下拉：从 iPhone X 到最新（含占位） -->
     <select id="deviceSelect"></select>
 
     <h1>素材库（拖到画布）</h1>
     <div class="palette" id="palette"></div>
     <div class="hint">
-      电脑：拖动移动；按 <span class="kbd">R</span> 并在对象上拖动旋转；滚轮缩放；Delete删除。<br/>
+      电脑：拖动；按 <span class="kbd">R</span> 并在对象上拖动旋转；滚轮缩放；Delete删除。<br/>
       手机：单指拖动；两指捏合缩放；两指扭动旋转。
     </div>
   </aside>
@@ -46,9 +45,15 @@
       <input type="checkbox" id="snapToggle" checked>
       <label for="snapToggle">贴靠对齐（中心线 + 10px 网格；旋转吸附 15°）</label>
     </div>
-    <div class="hint small">机型切换只影响外框/可印区/开孔，图层不会丢失。</div>
+    <div class="field toggle">
+      <input type="checkbox" id="rotateMode">
+      <label for="rotateMode">旋转模式（不用按 R，拖动即旋转）</label>
+    </div>
+    <div class="hint small">机型切换仅影响外框/可印区/开孔；图层不会丢失。</div>
   </div>
 
+  <!-- 入口脚本（必须用模块） -->
   <script type="module" src="./js/main.js"></script>
 </body>
 </html>
+

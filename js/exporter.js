@@ -1,7 +1,6 @@
 import { state } from './state.js';
-import { roundedRectPath } from './utils.js';
 
-// 导出 PNG：裁剪到可印区，遮掉相机孔
+// 导出 PNG：只导出可印区，遮掉相机孔
 export function exportPNG(){
   const scale = 2;
   const out = document.createElement('canvas');
@@ -9,11 +8,10 @@ export function exportPNG(){
   out.height = state.caseArea.h * scale;
   const oc = out.getContext('2d');
 
-  // 背景色（可改成纹理）
   oc.fillStyle = '#0b1224';
   oc.fillRect(0,0,out.width,out.height);
 
-  // 可印区剪裁
+  // Clip 可印区（圆角）
   oc.save();
   (function(){
     const r = state.caseArea.r * scale;
@@ -39,7 +37,7 @@ export function exportPNG(){
     }
   }
 
-  // 绘制对象（中心坐标 -> 导出坐标）
+  // 绘制对象
   for(const o of state.objects){
     oc.save();
     oc.translate((o.cx - state.caseArea.x)*scale, (o.cy - state.caseArea.y)*scale);
@@ -57,3 +55,4 @@ export function exportPNG(){
     URL.revokeObjectURL(a.href);
   }, 'image/png');
 }
+

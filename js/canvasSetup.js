@@ -12,9 +12,9 @@ export function setupCanvasDPR(canvas){
   return {ctx, DPR};
 }
 
-// 切换机型：更新外框/可印区/孔位
 export function applyDeviceParams(params){
   state.outer = {...params.outer};
   state.caseArea = {...params.print};
   state.cameraCutouts = params.holes || [];
 }
+

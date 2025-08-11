@@ -1,4 +1,4 @@
-// 手机端：单指拖动、两指缩放+旋转（Pointer Events）
+// 手机端：Pointer Events（单指拖、两指缩放+旋转）
 import { state, api } from './state.js';
 import { clamp } from './utils.js';
 import { draw } from './render.js';
@@ -40,7 +40,7 @@ export function installTouchGestures(canvas, ctx, helpers){
         mode:'transform', id:o.id,
         startDist: dist(p1,p2), startAng: ang(p1,p2),
         s0: o.scale, a0: o.angle,
-        c0: {x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2},  // 两指中心
+        c0: {x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2},
         cx0: o.cx, cy0: o.cy
       };
     }
@@ -76,7 +76,6 @@ export function installTouchGestures(canvas, ctx, helpers){
     pointers.delete(e.pointerId);
     if(pointers.size===0){ gesture=null; start=null; }
     else if(gesture==='transform' && pointers.size===1){
-      // 从两指回到一指，继续平移
       const p = Array.from(pointers.values())[0];
       const o = api.getSelected(); if(o){
         gesture='pan'; start={mode:'pan', id:o.id, dx:p.x-o.cx, dy:p.y-o.cy};
@@ -89,3 +88,4 @@ export function installTouchGestures(canvas, ctx, helpers){
   canvas.addEventListener('pointerup', onUp, {passive:false});
   canvas.addEventListener('pointercancel', onUp, {passive:false});
 }
+

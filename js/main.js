@@ -1,19 +1,18 @@
-import { ICONS } from './constants.js';
-import { state, api } from './state.js';
 import { setupCanvasDPR, applyDeviceParams } from './canvasSetup.js';
-import { draw } from './render.js';
 import { initPalette } from './palette.js';
 import { installMouse } from './interactionsMouse.js';
 import { installTouchGestures } from './touchGestures.js';
 import { installStorage } from './storage.js';
 import { exportPNG } from './exporter.js';
 import { DEVICE_LIST, DEVICE_PARAMS } from './devices.js';
+import { state, api } from './state.js';
+import { draw } from './render.js';
 
-// 1) 画布与 DPR
+// 画布
 const canvas = document.getElementById('stage');
 const { ctx } = setupCanvasDPR(canvas);
 
-// 2) 机型下拉
+// 机型下拉
 const sel = document.getElementById('deviceSelect');
 DEVICE_LIST.forEach(d=>{
   const opt = document.createElement('option');
@@ -23,25 +22,31 @@ DEVICE_LIST.forEach(d=>{
 });
 function applyDevice(deviceId){
   state.deviceId = deviceId;
-  applyDeviceParams(DEVICE_PARAMS[deviceId]);
+  const params = DEVICE_PARAMS[deviceId];
+  applyDeviceParams(params);
   draw(ctx);
 }
 applyDevice(state.deviceId);
 sel.addEventListener('change', ()=> applyDevice(sel.value));
 
-// 3) 素材库 & 交互
+// 素材 & 交互 & 存取 & 导出
 initPalette(canvas, ctx);
-const helpers = installMouse(canvas, ctx);           // 鼠标交互
-installTouchGestures(canvas, ctx, helpers);          // 触控交互
-installStorage(canvas, ctx);                         // 保存/载入
+const helpers = installMouse(canvas, ctx);
+installTouchGestures(canvas, ctx, helpers);
+installStorage(canvas, ctx);
 document.getElementById('btnExport').addEventListener('click', exportPNG);
 
-// 4) UI：贴靠开关 & 缩放滑条
-const scaleRange = document.getElementById('scaleRange');
-const scaleVal = document.getElementById('scaleVal');
+// UI：贴靠与旋转模式
 document.getElementById('snapToggle').addEventListener('change', (e)=>{
   state.snapEnabled = e.target.checked;
 });
+document.getElementById('rotateMode').addEventListener('change', (e)=>{
+  state.rotateMode = e.target.checked;
+});
+
+// 缩放滑条
+const scaleRange = document.getElementById('scaleRange');
+const scaleVal = document.getElementById('scaleVal');
 scaleRange.addEventListener('input', ()=>{
   const o = api.getSelected(); if(!o) return;
   o.scale = parseFloat(scaleRange.value);
@@ -49,5 +54,6 @@ scaleRange.addEventListener('input', ()=>{
   draw(ctx);
 });
 
-// 首绘
+// 首次绘制
 draw(ctx);
+
